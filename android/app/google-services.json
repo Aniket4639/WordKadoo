@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "850800501247",
+    "project_id": "wordkadoo",
+    "storage_bucket": "wordkadoo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850800501247:android:c57874f17e6266419207ca",
+        "android_client_info": {
+          "package_name": "com.wordkadoo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5xqj-3kr0wNmLZMgH4Dj_AYhz9max1ck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

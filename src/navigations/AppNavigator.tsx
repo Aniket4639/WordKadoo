@@ -7,10 +7,12 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {NavigationContainer} from '@react-navigation/native';
 import TabScreen from '../screens/tabs/tabScreen/TabScreen';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import VocabularyListScreen from '../screens/tabs/homeScreen/components/vocabulary/VocabularyListScreen';
+import VocabularyDaysListScreen from '../screens/tabs/homeScreen/components/vocabulary/VocabularyDaysList';
 
 interface AppNavigatorInterface {
   first?: string;
@@ -29,7 +31,17 @@ function AppNavigator() {
         <Stack.Screen
           name="Tab"
           component={TabScreen}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="VocabularyDaysList"
+          component={VocabularyDaysListScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="VocabularyList"
+          component={VocabularyListScreen}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </SafeAreaProvider>
