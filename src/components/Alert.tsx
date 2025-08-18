@@ -2,10 +2,14 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import {ViewStyle, StyleProp} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DividerLine from './DividerLine';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {GLOBALSTYLES} from '../globalStyles/GlobalStyles';
 import {GLOBALCOLORS} from '../globalStyles/GlobalColors';
 import RadioButton from './RadioButton';
+import {useDispatch, useSelector} from 'react-redux';
+import {setactiveLanguage} from '../redux/slices/languageInfo/languageInfoSlice';
+import { act } from 'react-test-renderer';
+import { RootState } from '../redux/store';
 interface AlertComponent {
   alertVisible: boolean;
   setAlertVisible: (value: boolean) => void;
@@ -19,12 +23,24 @@ const Alert = ({
   setAlertVisible,
   navigation,
 }: AlertComponent) => {
+
+  const activeLanguage = useSelector((state: RootState) => state?.languageInfo?.activeLanguage);
+  const dispatch = useDispatch();
+  const [radioButtonSelected, setRadioButtonSelected] = useState<number>(0);
+  const [languageSelected, setLanguageSelected] = useState<string>(activeLanguage);
   const data = [
     {id: 0, label: 'Japanese-English (N3)'},
     {id: 1, label: 'Spanish-English'},
   ];
 
-  const [radioButtonSelected, setRadioButtonSelected] = useState<number>(0);
+  useEffect(() => {
+    switch (radioButtonSelected) {
+      case 0:
+        return setLanguageSelected('N3');
+      default:
+        return setLanguageSelected('Spanish');
+    }
+  }, [radioButtonSelected]);
 
   return (
     <>
@@ -95,7 +111,8 @@ const Alert = ({
                   borderColor: GLOBALCOLORS.border_Color,
                 }}
                 onPress={() => {
-                  navigation.navigate('TabScreen');
+                  dispatch(setactiveLanguage(languageSelected));
+                  setAlertVisible(false)
                 }}>
                 <Text
                   style={{

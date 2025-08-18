@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   ScrollView,
   Text,
@@ -8,11 +8,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Tts from 'react-native-tts';
-import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GLOBALCOLORS} from '../../../../../globalStyles/GlobalColors';
 import {GLOBALSTYLES} from '../../../../../globalStyles/GlobalStyles';
-import firestore from '@react-native-firebase/firestore';
+import {RootState} from '../../../../../redux/store';
+import {useSelector} from 'react-redux';
 
 interface VocabularyListScreen {
   firstWord: string;
@@ -20,34 +20,26 @@ interface VocabularyListScreen {
 }
 
 const VocabularyListScreen = ({navigation}: any) => {
-  const [data, setData] = useState<any>([]);
+  const userData = useSelector((state: RootState) => state?.userInfo?.userData);
+  const activeLanguage = useSelector(
+    (state: RootState) => state?.languageInfo?.activeLanguage,
+  );
+  console.group('Aniket:VocabularyListScree', userData);
+
   const [searchText, setSearchText] = useState('');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const handleFetchButton = async () => {
-    try {
-      const fetchedData: any = await firestore()
-        .collection('WordKadoo')
-        .doc('123456789')
-        .get();
-      if (fetchedData != undefined) {
-        setData(fetchedData.data()?.VocabularyList);
-      }
-    } catch (error) {
-      console.log('Uploading Async storage', error);
-    }
-  };
+
+  const vocabularyData =
+    activeLanguage === 'N3'
+      ? userData?.VocabularyN3List
+      : userData?.VocabularySpanishList;
+
   const handlePlayIcon = async (firstWord: string, secondWord: string) => {
     Tts.setDefaultLanguage('ja-JP');
-    Tts.stop(); // optional: stop ongoing speech
-    Tts.speak(firstWord);
+    Tts.stop();
     Tts.speak(secondWord);
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      handleFetchButton();
-    }, []),
-  );
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView
@@ -56,7 +48,6 @@ const VocabularyListScreen = ({navigation}: any) => {
           flex: 1,
           backgroundColor: '#F6F2F7',
           padding: 16,
-          // pointerEvents: modalVisible ? 'none' : 'auto',
         }}>
         <View
           style={{
@@ -73,11 +64,13 @@ const VocabularyListScreen = ({navigation}: any) => {
               <Icon name="angle-left" size={30} color="#4169e1" />
               <Text style={{fontSize: 20, color: '#4169e1'}}>Back</Text>
             </TouchableOpacity>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: '600',
-              }}>{`${data.length} words`}</Text>
+            {vocabularyData?.length && (
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: '600',
+                }}>{`${vocabularyData?.length} words`}</Text>
+            )}
           </View>
           <TouchableOpacity
             style={{
@@ -135,8 +128,8 @@ const VocabularyListScreen = ({navigation}: any) => {
             <Text style={{fontSize: 20, color: '#4169e1'}}>Filter</Text>
           </TouchableOpacity>
         </View>
-        {data.length > 0 ? (
-          data?.map((e: any) => {
+        {vocabularyData?.length > 0 ? (
+          vocabularyData?.map((e: any) => {
             return (
               <TouchableOpacity
                 style={{

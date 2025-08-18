@@ -13,8 +13,13 @@ import AddingWordCard from '../../../components/AddingWord';
 import Toaster from '../../../components/Toaster';
 import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
 const AddWordScreen = ({navigation}: any) => {
+  const activeLanguage = useSelector(
+    (state: RootState) => state?.languageInfo?.activeLanguage,
+  );
   const [firstText, onChangeFirstText] = useState('');
   const [secondText, onChangeSecondText] = useState('');
   const [optionalText, onChangeOptionalText] = useState('');
@@ -38,11 +43,18 @@ const AddWordScreen = ({navigation}: any) => {
         .doc('123456789')
         .get();
       let updatedData: any = {};
-      if (oldData?.data()) {
+      if (oldData?.data() && activeLanguage ==='N3') {
         const fetchedData: any = oldData?.data();
         updatedData = {
           ...fetchedData,
-          VocabularyList: [...(fetchedData?.VocabularyList || []), data],
+          VocabularyN3List: [...(fetchedData?.VocabularyN3List || []), data],
+        };
+      }
+      else if (oldData?.data() && activeLanguage ==='Spanish') {
+        const fetchedData: any = oldData?.data();
+        updatedData = {
+          ...fetchedData,
+          VocabularySpanishList: [...(fetchedData?.VocabularySpanishList || []), data],
         };
       } else {
         updatedData = {
